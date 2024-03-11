@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <Button
+            android:id="@+id/bLimpar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Limpar"
+            app:layout_constraintLeft_toRightOf="@+id/bCadastrar"
+            app:layout_constraintTop_toBottomOf="@id/sNivel"
+            android:layout_marginLeft="10dp"
+            />
+
+        <Button
+            android:id="@+id/bCadastrar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Cadastrar"
+            app:layout_constraintTop_toBottomOf="@id/tNivel"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="90dp"
+            app:layout_constraintRight_toLeftOf="@id/bLimpar"
+            />
+
+        <TextView
+            android:id="@+id/tCadastroAlarme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="Cadastro Alarme"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/tNome"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:orientation="horizontal"
+
+            />
+
+
+
+        <TextView
+            android:id="@+id/tNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_marginRight="250dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:fontFamily="sans-serif-black"
+            android:text="Nome:"
+            app:layout_constraintTop_toBottomOf="@id/tCadastroAlarme"
+            />
+
+        <EditText
+            android:id="@+id/inputNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tNivel"
+            app:layout_constraintTop_toBottomOf="@id/rHabilitado"
+            />
+
+        <TextView
+            android:id="@+id/tNivel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="Nível:"
+            app:layout_constraintBottom_toTopOf="@id/bCadastrar"
+            app:layout_constraintTop_toBottomOf="@+id/tNome"
+            android:layout_marginRight="250dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="20dp"
+       />
+
+        <Spinner
+            android:id="@+id/sNivel"
+            android:layout_width="180dp"
+            android:layout_height="23dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="10dp"
+            android:entries="@array/niveis"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputNome" />
+
+        <CheckBox
+            android:id="@+id/cDiasUteis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dias Utéis"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bLimpar"
+            app:layout_constraintTop_toBottomOf="@id/sNivel"
+            android:layout_marginLeft="200dp"
+
+            />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10px"
+            app:layout_constraintBottom_toTopOf="@id/tCadastroAlarme"
+            app:layout_constraintTop_toBottomOf="@id/tCadastroAlarme"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="230dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="130dp"
+            app:layout_goneMarginTop="30dp"
+            android:id="@+id/rHabilitado"
+            >
+
+            <RadioButton
+                android:id="@+id/rAtivo"
+                android:layout_width="92dp"
+                android:layout_height="32dp"
+                android:text="Ativo"
+             />
+
+            <RadioButton
+                android:id="@+id/rInativo"
+                android:layout_width="109dp"
+                android:layout_height="28dp"
+                android:text="Inativo"
+         />
+
+        </RadioGroup>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
