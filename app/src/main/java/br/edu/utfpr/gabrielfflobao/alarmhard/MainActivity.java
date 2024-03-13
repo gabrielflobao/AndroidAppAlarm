@@ -1,7 +1,7 @@
 package br.edu.utfpr.gabrielfflobao.alarmhard;
 
+import android.content.Intent;
 import android.os.Bundle;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,13 +10,9 @@ import android.view.View;
 import androidx.navigation.ui.AppBarConfiguration;
 
 
-import enums.EnumNiveis;
-
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,38 +21,50 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+import dao.AlarmeDAO;
+import enums.EnumNiveis;
+import model.Alarme;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
+    private Button bLimpar;
+    private Button bCadastrar;
+    private TextView tCadastroAlarme;
+    private TextView tNome;
+    private EditText inputNome;
+    private TextView tNivel;
+    private Spinner sNivel;
+    private CheckBox cDiasUteis;
+    private RadioButton rOpcao;
+    private RadioButton rAtivo;
+    private RadioButton rInativo;
+
+    private EditText eHoraAlarme;
+
+    private Button bVoltar;
 
 
-    Button bLimpar;
-    Button bCadastrar;
-    TextView tCadastroAlarme;
-    TextView tNome;
-    EditText inputNome;
-
-    TextView tNivel;
-    Spinner sNivel;
-
-    CheckBox cDiasUteis;
-    RadioButton rOpcao;
-
-    RadioButton rAtivo;
-    RadioButton rInativo;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-        sNivel = findViewById(R.id.sNivel);
-        rAtivo = findViewById(R.id.rAtivo);
-        rInativo = findViewById(R.id.rInativo);
+        this.sNivel = findViewById(R.id.sNivel);
+        this.rAtivo = findViewById(R.id.rAtivo);
+        this.rInativo = findViewById(R.id.rInativo);
+        this.eHoraAlarme = findViewById(R.id.eHoraAlarme);
         this.inputNome = findViewById(R.id.inputNome);
         this.cDiasUteis = findViewById(R.id.cDiasUteis);
+        this.bVoltar = findViewById(R.id.bVoltar);
 
+        bVoltar.setOnClickListener(v -> {
+            goToSecondPage();
+        });
 
 
 
@@ -72,23 +80,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         bCadastrar.setOnClickListener(v -> {
             rAtivo = findViewById(R.id.rAtivo);
             rInativo = findViewById(R.id.rInativo);
-            StringBuilder messageError = new StringBuilder();
-            Toast message = Toast.makeText(this,messageError,Toast.LENGTH_LONG);
+            StringBuilder messageAction = new StringBuilder();
+            Toast message = Toast.makeText(this, messageAction,Toast.LENGTH_LONG);
             if(!rInativo.isChecked() && !rAtivo.isChecked()) {
-                messageError.append("Preencha se o despertador ficará ativo ou inativo");
-                message.setText(messageError);
+                messageAction.append("Preencha se o despertador ficará ativo ou inativo");
+                message.setText(messageAction);
                 message.show();
             } else if(inputNome.getText().length() ==0) {
-                messageError.append("Campo nome está vazio");
-                message.setText(messageError);
+                messageAction.append("Campo nome está vazio");
+                message.setText(messageAction);
+                message.show();
+            } else {
+                Alarme alarme = new Alarme();
+                alarme.setAtivo(rAtivo.isChecked());
+                alarme.setNome(inputNome.getText().toString());
+                alarme.setDiasUteis(cDiasUteis.isChecked());
+                alarme.setNiveis(EnumNiveis.getNivel(sNivel.getSelectedItem().toString().toUpperCase()));
+
+
+                alarme.setHora(LocalTime.from(formatter.parse(eHoraAlarme.getText().toString())));
+
+
+                System.out.println(alarme.getHora());
+                cadastrarAlarme(alarme);
+                limparCampos();
+                messageAction.append("Alarme Cadastrado Com Sucesso!!!");
+                message.setText(messageAction);
                 message.show();
             }
+
+
 
 
 
         });
 
 
+    }
+
+    private void goToSecondPage() {
+        Intent secondPage = new Intent(MainActivity.this,MainActivity2.class);
+        startActivity(secondPage);
     }
 
     @Override
@@ -128,6 +160,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
        this.cDiasUteis.setChecked(false);
        this.rAtivo.setChecked(false);
        this.rInativo.setChecked(false);
+    }
+
+    void cadastrarAlarme(Alarme alarme) {
+        AlarmeDAO.add(alarme);
+        AlarmeDAO.getList().forEach( v -> System.out.println(v.toString()));
     }
 
     @Override

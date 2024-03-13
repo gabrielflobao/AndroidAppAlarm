@@ -13,7 +13,12 @@ public enum EnumNiveis {
         return descricao;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public static EnumNiveis getNivel(String name) {
+
+        return ( FACIL.getDescricao() == name ? FACIL :
+                MEDIO.getDescricao() == name ? MEDIO :
+                DIFICIL.getDescricao() ==name ? DIFICIL:
+                NENHUM.getDescricao() == name ? NENHUM : null
+                );
     }
 }
