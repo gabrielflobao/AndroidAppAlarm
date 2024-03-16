@@ -12,8 +12,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 
+import adapter.AlarmeAdapterList;
 import dao.AlarmeDAO;
+import model.Alarme;
 
+/**
+ * Author : Gabriel F F Lobão
+ * Date : 16/03/2024
+ */
 public class MainActivity2 extends AppCompatActivity {
 
     private ListView listView;
@@ -28,16 +34,14 @@ public class MainActivity2 extends AppCompatActivity {
             return insets;
         });
 
-        listView = findViewById(R.id.ListViewItens);
-        populaListView();
+
+        ListView lista = (ListView) findViewById(R.id.listaAlarme);
+        ArrayList<Alarme> alarmes = getAlarmes();
+        AlarmeAdapterList adapter = new AlarmeAdapterList(alarmes, this);
+        lista.setAdapter(adapter);
     }
 
-    private void populaListView() {
-
-        ArrayList<String> nomesAlarmes = new ArrayList<String>();
-        AlarmeDAO.getList().forEach(v -> nomesAlarmes.add(v.getNome()));
-        ArrayAdapter<String> list = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,nomesAlarmes);
-        listView.setAdapter(list);
-
+    public ArrayList<Alarme>  getAlarmes() {
+        return AlarmeDAO.getList();
     }
 }

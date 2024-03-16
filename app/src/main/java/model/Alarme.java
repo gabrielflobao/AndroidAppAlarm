@@ -1,7 +1,10 @@
 package model;
 
 import java.time.LocalTime;
-
+/**
+ * Author : Gabriel F F Lobão
+ * Date : 16/03/2024
+ */
 public class Alarme {
     private Enum Niveis;
     private String nome;

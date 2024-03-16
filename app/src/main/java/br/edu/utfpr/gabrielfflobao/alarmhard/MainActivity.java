@@ -23,11 +23,17 @@ import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Logger;
 
 import dao.AlarmeDAO;
+import entity.component.AlarmeComponent;
 import enums.EnumNiveis;
 import model.Alarme;
-
+import utils.InputDateParser;
+/**
+ * Author : Gabriel F F Lobão
+ * Date : 16/03/2024
+ */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
@@ -48,76 +54,91 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button bVoltar;
 
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StringBuilder message = new StringBuilder();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-        this.sNivel = findViewById(R.id.sNivel);
-        this.rAtivo = findViewById(R.id.rAtivo);
-        this.rInativo = findViewById(R.id.rInativo);
-        this.eHoraAlarme = findViewById(R.id.eHoraAlarme);
-        this.inputNome = findViewById(R.id.inputNome);
-        this.cDiasUteis = findViewById(R.id.cDiasUteis);
-        this.bVoltar = findViewById(R.id.bVoltar);
-
-        bVoltar.setOnClickListener(v -> {
-            goToSecondPage();
-        });
+        inicializaComponentes();
 
 
-
-        bLimpar = findViewById(R.id.bLimpar);
-        bLimpar.setOnClickListener(v -> {
-                    Toast message = new Toast(this);
-                limparCampos();
-                    message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
-                    message.show();
-                }
+        AlarmeComponent component = new AlarmeComponent(inputNome,
+                sNivel,
+                eHoraAlarme,
+                rAtivo,
+                rInativo,
+                cDiasUteis,
+                rOpcao
         );
-        bCadastrar = findViewById(R.id.bCadastrar);
+
+        bVoltarClick(bVoltar);
+        bLimparClick(bLimpar);
+        bCadastrarClick(bCadastrar,component);
+
+
+
+    }
+
+    private void bCadastrarClick(Button bCadastrar,AlarmeComponent component) {
         bCadastrar.setOnClickListener(v -> {
-            rAtivo = findViewById(R.id.rAtivo);
-            rInativo = findViewById(R.id.rInativo);
             StringBuilder messageAction = new StringBuilder();
             Toast message = Toast.makeText(this, messageAction,Toast.LENGTH_LONG);
-            if(!rInativo.isChecked() && !rAtivo.isChecked()) {
+            if(component.isOpAtivoInativoUnChecked()) {
                 messageAction.append("Preencha se o despertador ficará ativo ou inativo");
                 message.setText(messageAction);
                 message.show();
-            } else if(inputNome.getText().length() ==0) {
+            } else if(component.isNomeEmpty()) {
                 messageAction.append("Campo nome está vazio");
                 message.setText(messageAction);
                 message.show();
-            } else {
-                Alarme alarme = new Alarme();
-                alarme.setAtivo(rAtivo.isChecked());
-                alarme.setNome(inputNome.getText().toString());
-                alarme.setDiasUteis(cDiasUteis.isChecked());
-                alarme.setNiveis(EnumNiveis.getNivel(sNivel.getSelectedItem().toString().toUpperCase()));
-
-
-                alarme.setHora(LocalTime.from(formatter.parse(eHoraAlarme.getText().toString())));
-
-
-                System.out.println(alarme.getHora());
-                cadastrarAlarme(alarme);
+            }  else if (component.isHoraAlarmeEmpty()) {
+                messageAction.append("Necessário preencher campo Hora");
+                message.setText(messageAction);
+                message.show();
+            }else {
+                cadastrarAlarme(component.generateEntity());
                 limparCampos();
                 messageAction.append("Alarme Cadastrado Com Sucesso!!!");
                 message.setText(messageAction);
                 message.show();
             }
-
-
-
-
-
         });
-
 
     }
 
+    
+
+    private void bLimparClick(Button bLimpar) {
+      try {
+          bLimpar.setOnClickListener(v -> {
+                      Toast message = new Toast(this);
+                      limparCampos();
+                      message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
+                      message.show();
+                  }
+          );
+      }catch (Exception e ) {
+          Logger.getLogger(e.getMessage());
+      }
+    }
+
+
+    public void bVoltarClick(Button bVoltar) {
+
+        try {
+            bVoltar.setOnClickListener(v -> {
+                goToSecondPage();
+            });
+        }catch (Exception e ){
+            e.printStackTrace();
+            Logger.getLogger(e.getMessage());
+        }
+
+
+    }
     private void goToSecondPage() {
         Intent secondPage = new Intent(MainActivity.this,MainActivity2.class);
         startActivity(secondPage);
@@ -160,6 +181,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
        this.cDiasUteis.setChecked(false);
        this.rAtivo.setChecked(false);
        this.rInativo.setChecked(false);
+       this.rAtivo.setClickable(true);
+       this.rInativo.setClickable(true);
     }
 
     void cadastrarAlarme(Alarme alarme) {
@@ -174,6 +197,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public void inicializaComponentes() {
+        this.sNivel = findViewById(R.id.sNivel);
+        this.rAtivo = findViewById(R.id.rAtivo);
+        this.rInativo = findViewById(R.id.rInativo);
+        this.eHoraAlarme = findViewById(R.id.eHoraAlarme);
+        this.inputNome = findViewById(R.id.inputNome);
+        this.cDiasUteis = findViewById(R.id.cDiasUteis);
+        this.bVoltar = findViewById(R.id.bVoltar);
+        this.bLimpar = findViewById(R.id.bLimpar);
+        this.bCadastrar = findViewById(R.id.bCadastrar);
 
     }
 }

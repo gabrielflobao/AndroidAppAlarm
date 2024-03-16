@@ -1,5 +1,8 @@
 package enums;
-
+/**
+ * Author : Gabriel F F Lobão
+ * Date : 16/03/2024
+ */
 public enum EnumNiveis {
     FACIL("Fácil"),MEDIO("Médio"),DIFICIL("Difícil"),NENHUM("Nenhum");
 
