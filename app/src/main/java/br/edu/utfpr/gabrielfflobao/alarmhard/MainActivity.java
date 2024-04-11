@@ -3,6 +3,8 @@ package br.edu.utfpr.gabrielfflobao.alarmhard;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -21,15 +23,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 import dao.AlarmeDAO;
 import entity.component.AlarmeComponent;
-import enums.EnumNiveis;
 import model.Alarme;
-import utils.InputDateParser;
+
 /**
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
@@ -54,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button bVoltar;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StringBuilder message = new StringBuilder();
@@ -76,53 +72,57 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         bVoltarClick(bVoltar);
         bLimparClick(bLimpar);
-        bCadastrarClick(bCadastrar,component);
-
+        bCadastrarClick(bCadastrar, component);
 
 
     }
 
-    private void bCadastrarClick(Button bCadastrar,AlarmeComponent component) {
+    private void bCadastrarClick(Button bCadastrar, AlarmeComponent component) {
         bCadastrar.setOnClickListener(v -> {
             StringBuilder messageAction = new StringBuilder();
-            Toast message = Toast.makeText(this, messageAction,Toast.LENGTH_LONG);
-            if(component.isOpAtivoInativoUnChecked()) {
+            Toast message = Toast.makeText(this, messageAction, Toast.LENGTH_LONG);
+            if (component.isOpAtivoInativoUnChecked()) {
                 messageAction.append("Preencha se o despertador ficará ativo ou inativo");
                 message.setText(messageAction);
                 message.show();
-            } else if(component.isNomeEmpty()) {
+            } else if (component.isNomeEmpty()) {
                 messageAction.append("Campo nome está vazio");
                 message.setText(messageAction);
                 message.show();
-            }  else if (component.isHoraAlarmeEmpty()) {
+            } else if (component.isHoraAlarmeEmpty()) {
                 messageAction.append("Necessário preencher campo Hora");
                 message.setText(messageAction);
                 message.show();
-            }else {
-                cadastrarAlarme(component.generateEntity());
-                limparCampos();
-                messageAction.append("Alarme Cadastrado Com Sucesso!!!");
-                message.setText(messageAction);
+            } else {
+                Alarme alarme = component.generateEntity(this);
+                if (alarme != null) {
+                    limparCampos();
+                    messageAction.append("Alarme Cadastrado Com Sucesso!!!");
+                    message.setText(messageAction);
+                    message.show();
+                } else {
+                    messageAction.append("Falha ao cadastrar alarme");
+                    message.setText(messageAction);
+                }
                 message.show();
             }
         });
 
     }
 
-    
 
     private void bLimparClick(Button bLimpar) {
-      try {
-          bLimpar.setOnClickListener(v -> {
-                      Toast message = new Toast(this);
-                      limparCampos();
-                      message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
-                      message.show();
-                  }
-          );
-      }catch (Exception e ) {
-          Logger.getLogger(e.getMessage());
-      }
+        try {
+            bLimpar.setOnClickListener(v -> {
+                        Toast message = new Toast(this);
+                        limparCampos();
+                        message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
+                        message.show();
+                    }
+            );
+        } catch (Exception e) {
+            Logger.getLogger(e.getMessage());
+        }
     }
 
 
@@ -132,17 +132,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             bVoltar.setOnClickListener(v -> {
                 goToSecondPage();
             });
-        }catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
             Logger.getLogger(e.getMessage());
         }
 
 
     }
+
     private void goToSecondPage() {
-        Intent secondPage = new Intent(MainActivity.this,MainActivity2.class);
+        Intent secondPage = new Intent(MainActivity.this, ListagemAlarmesActivity.class);
         startActivity(secondPage);
+        startActivityForResult(secondPage,100);
+        registerForActivityResult();
     }
+        ActivityResultLauncher<Intent> abreActivity= registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
+        ,result -> {
+                    if (result.getResultCode() == MainActivity.RESULT_OK) {
+                        Intent intent = result.getData();
+
+                    }
+                }
+            );
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,17 +188,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     void limparCampos() {
-       this.inputNome.setText("");
-       this.cDiasUteis.setChecked(false);
-       this.rAtivo.setChecked(false);
-       this.rInativo.setChecked(false);
-       this.rAtivo.setClickable(true);
-       this.rInativo.setClickable(true);
+        this.inputNome.setText("");
+        this.cDiasUteis.setChecked(false);
+        this.rAtivo.setChecked(false);
+        this.rInativo.setChecked(false);
+        this.rAtivo.setClickable(true);
+        this.rInativo.setClickable(true);
     }
 
     void cadastrarAlarme(Alarme alarme) {
         AlarmeDAO.add(alarme);
-        AlarmeDAO.getList().forEach( v -> System.out.println(v.toString()));
+        AlarmeDAO.getList().forEach(v -> System.out.println(v.toString()));
     }
 
     @Override

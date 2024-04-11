@@ -1,10 +1,11 @@
 package br.edu.utfpr.gabrielfflobao.alarmhard;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,7 +21,7 @@ import model.Alarme;
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
  */
-public class MainActivity2 extends AppCompatActivity {
+public class ListagemAlarmesActivity extends AppCompatActivity {
 
     private ListView listView;
     @Override
@@ -39,6 +40,12 @@ public class MainActivity2 extends AppCompatActivity {
         ArrayList<Alarme> alarmes = getAlarmes();
         AlarmeAdapterList adapter = new AlarmeAdapterList(alarmes, this);
         lista.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public ArrayList<Alarme>  getAlarmes() {
