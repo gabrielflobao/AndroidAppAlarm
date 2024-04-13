@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import java.util.logging.Logger;
 
-import dao.AlarmeDAO;
 import entity.component.AlarmeComponent;
 import model.Alarme;
 
@@ -33,7 +31,7 @@ import model.Alarme;
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
  */
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CadastraAlarmeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
     private Button bLimpar;
@@ -60,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.content_main);
         inicializaComponentes();
 
+    }
 
+    public void bCadastrarClick(View view) {
         AlarmeComponent component = new AlarmeComponent(inputNome,
                 sNivel,
                 eHoraAlarme,
@@ -69,49 +69,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 cDiasUteis,
                 rOpcao
         );
-
-        bVoltarClick(bVoltar);
-        bLimparClick(bLimpar);
-        bCadastrarClick(bCadastrar, component);
-
-
-    }
-
-    private void bCadastrarClick(Button bCadastrar, AlarmeComponent component) {
         bCadastrar.setOnClickListener(v -> {
             StringBuilder messageAction = new StringBuilder();
             Toast message = Toast.makeText(this, messageAction, Toast.LENGTH_LONG);
             if (component.isOpAtivoInativoUnChecked()) {
-                messageAction.append("Preencha se o despertador ficará ativo ou inativo");
+                messageAction.append(getString(R.string.preencha_se_o_despertador_ficar_ativo_ou_inativo));
                 message.setText(messageAction);
                 message.show();
             } else if (component.isNomeEmpty()) {
-                messageAction.append("Campo nome está vazio");
+                messageAction.append(getString(R.string.campo_nome_vazio));
                 message.setText(messageAction);
                 message.show();
             } else if (component.isHoraAlarmeEmpty()) {
-                messageAction.append("Necessário preencher campo Hora");
+                messageAction.append(getString(R.string.necess_rio_preencher_campo_hora));
                 message.setText(messageAction);
                 message.show();
+            } else if (!component.validateHoraMinuto()) {
+                messageAction.append(getString(R.string.campo_hora_invalido));
+                message.setText(messageAction);
+                message.show();
+
             } else {
                 Alarme alarme = component.generateEntity(this);
                 if (alarme != null) {
                     limparCampos();
-                    messageAction.append("Alarme Cadastrado Com Sucesso!!!");
+                    messageAction.append(getString(R.string.alarme_cadastrado_com_sucesso));
                     message.setText(messageAction);
                     message.show();
+                    Intent intent = new Intent();
+                    intent.putExtra("Alarme", alarme);
+                    setResult(RESULT_OK,intent);
+                    finish();
                 } else {
-                    messageAction.append("Falha ao cadastrar alarme");
+                    setResult(RESULT_CANCELED);
+                    messageAction.append(getString(R.string.falha_ao_cadastrar_alarme));
                     message.setText(messageAction);
+                    message.show();
                 }
-                message.show();
             }
-        });
 
-    }
+    });
 
 
-    private void bLimparClick(Button bLimpar) {
+}
+
+
+    private void bLimparClick(View view) {
         try {
             bLimpar.setOnClickListener(v -> {
                         Toast message = new Toast(this);
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    public void bVoltarClick(Button bVoltar) {
+    public void bVoltarClick(View view) {
 
         try {
             bVoltar.setOnClickListener(v -> {
@@ -141,50 +144,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void goToSecondPage() {
-        Intent secondPage = new Intent(MainActivity.this, ListagemAlarmesActivity.class);
+        Intent secondPage = new Intent(CadastraAlarmeActivity.this, ListagemAlarmesActivity.class);
         startActivity(secondPage);
-        startActivityForResult(secondPage,100);
-        registerForActivityResult();
-    }
-        ActivityResultLauncher<Intent> abreActivity= registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
-        ,result -> {
-                    if (result.getResultCode() == MainActivity.RESULT_OK) {
-                        Intent intent = result.getData();
 
-                    }
-                }
-            );
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-       /* NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-    */
-        return true;
+    public static void enviarAlarmeCadastro(AppCompatActivity activity, ActivityResultLauncher<Intent> launcher) {
+        Intent intent = new Intent(activity, CadastraAlarmeActivity.class);
+        launcher.launch(intent);
     }
 
     void limparCampos() {
@@ -196,10 +164,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.rInativo.setClickable(true);
     }
 
-    void cadastrarAlarme(Alarme alarme) {
-        AlarmeDAO.add(alarme);
-        AlarmeDAO.getList().forEach(v -> System.out.println(v.toString()));
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -218,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.eHoraAlarme = findViewById(R.id.eHoraAlarme);
         this.inputNome = findViewById(R.id.inputNome);
         this.cDiasUteis = findViewById(R.id.cDiasUteis);
-        this.bVoltar = findViewById(R.id.bVoltar);
         this.bLimpar = findViewById(R.id.bLimpar);
         this.bCadastrar = findViewById(R.id.bCadastrar);
 

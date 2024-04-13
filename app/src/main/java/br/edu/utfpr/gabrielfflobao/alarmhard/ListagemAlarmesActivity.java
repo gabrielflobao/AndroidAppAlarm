@@ -1,15 +1,21 @@
 package br.edu.utfpr.gabrielfflobao.alarmhard;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 
@@ -24,31 +30,80 @@ import model.Alarme;
 public class ListagemAlarmesActivity extends AppCompatActivity {
 
     private ListView listView;
+
+    private AlarmeAdapterList adapter;
+
+    private ListAdapter adapterAlarme;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main2), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        startComponentes();
 
+    }
 
-        ListView lista = (ListView) findViewById(R.id.listaAlarme);
+    private void startComponentes() {
+        setContentView(R.layout.lista_alarme_adapter);
         ArrayList<Alarme> alarmes = getAlarmes();
-        AlarmeAdapterList adapter = new AlarmeAdapterList(alarmes, this);
-        lista.setAdapter(adapter);
-
+        adapter = new AlarmeAdapterList( this,alarmes);
+        listView = (ListView) findViewById(R.id.listaAlarme);
+        listView.setAdapter(adapter);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+    ActivityResultLauncher<Intent> resultAlarme= registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult o) {
+
+                    if(o.getResultCode() == Activity.RESULT_OK) {
+                        Intent result = o.getData();
+                        Bundle bundle = result.getExtras();
+                        if(bundle!=null) {
+                            Alarme alarme = (Alarme) bundle.get("Alarme");
+                            cadastrarAlarme(alarme);
+                            ArrayList<Alarme> alarmes = getAlarmes();
+                            adapter.setList(alarmes);
+                            listView.setAdapter(adapter);
+                            listView.deferNotifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
+
+
+                        }
+                    }
+                }
+            }
+
+    );
 
     public ArrayList<Alarme>  getAlarmes() {
         return AlarmeDAO.getList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.principais_opcoes,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int menuItemId = item.getItemId();
+       return selectOption(menuItemId);
+    }
+
+   private boolean selectOption(int opcao) {
+       if(opcao == R.id.menuItemCadastrar) {
+           CadastraAlarmeActivity.enviarAlarmeCadastro(this,resultAlarme);
+           return true;
+       }else if (opcao == R.id.menuItemSobre) {
+           SobreAcivity.goToSobreActivity(this);
+           return true;
+       }
+       return false;
+
+   }
+    void cadastrarAlarme(Alarme alarme) {
+        AlarmeDAO.add(alarme);
+        AlarmeDAO.getList().forEach(v -> System.out.println(v.toString()));
     }
 }

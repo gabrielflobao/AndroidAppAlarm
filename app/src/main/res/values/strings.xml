@@ -5,6 +5,15 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
+    <string name="preencha_se_o_despertador_ficar_ativo_ou_inativo">Preencha se o despertador ficará ativo ou inativo</string>
+    <string name="campo_nome_vazio">Campo nome está vazio</string>
+    <string name="necess_rio_preencher_campo_hora">Necessário preencher campo Hora</string>
+    <string name="alarme_cadastrado_com_sucesso">Alarme Cadastrado Com Sucesso!!!</string>
+    <string name="falha_ao_cadastrar_alarme">Falha ao cadastrar alarme</string>
+    <string name="campo_hora_invalido">Campo/formato hora invalido</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="sobre">Sobre</string>
+    <string name="salvar">Salvar</string>
     <string-array name="niveis">
         <item>Fácil</item>
         <item>Médio</item>

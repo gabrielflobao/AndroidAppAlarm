@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 /**
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
  */
-public class Alarme {
+public class Alarme implements Serializable {
     private Enum Niveis;
     private String nome;
     private Boolean diasUteis;

@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import enums.EnumNiveis;
 import model.Alarme;
@@ -28,7 +30,7 @@ public class AlarmeComponent {
     private RadioButton rInativo;
     private CheckBox cDiasUteis;
     private RadioButton rOpcao;
-
+    private final String regexHoraMinuto = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$";
     Alarme entity = new Alarme();
 
     public AlarmeComponent(EditText inputNome,
@@ -61,6 +63,12 @@ public class AlarmeComponent {
         return eHoraAlarme.getText().length() == 0;
     }
 
+    public Boolean validateHoraMinuto() {
+        Pattern pattern = Pattern.compile(regexHoraMinuto);
+        Matcher matcher = pattern.matcher(this.eHoraAlarme.getText());
+        return matcher.matches();
+    }
+
     public Alarme generateEntity(Context context) {
 
         try {
@@ -72,12 +80,13 @@ public class AlarmeComponent {
             alarme.setHora(InputDateParser.getTimeAlarme(eHoraAlarme));
             return alarme;
         } catch (DateTimeParseException e) {
-            Toast message = Toast.makeText(context, "Campo Hora segue a seguinte máscara : HH:mm"+e.getMessage(), Toast.LENGTH_LONG);
+            Toast message = Toast.makeText(context, "Campo Hora segue a seguinte máscara : HH:mm" + e.getMessage(), Toast.LENGTH_LONG);
             message.show();
-        } finally {
             return null;
         }
 
 
     }
+
+
 }
