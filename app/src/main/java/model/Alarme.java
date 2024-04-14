@@ -1,13 +1,20 @@
 package model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 /**
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
  */
+@Entity
 public class Alarme implements Serializable {
-    private Enum Niveis;
+    @PrimaryKey
+    private Long id;
+
+    private String nivel;
     private String nome;
     private Boolean diasUteis;
 
@@ -27,27 +34,35 @@ public class Alarme implements Serializable {
 
     }
 
-    public Alarme(Enum niveis, String nome, Boolean diasUteis, Boolean ativo, LocalTime hora) {
-        Niveis = niveis;
+    public Alarme(String nivel, String nome, Boolean diasUteis, Boolean ativo, LocalTime hora) {
+        this.nivel = nivel;
         this.nome = nome;
         this.diasUteis = diasUteis;
         this.ativo = ativo;
         this.hora = hora;
     }
 
-    public Alarme(Enum niveis, String nome, Boolean diasUteis, Boolean ativo) {
-        Niveis = niveis;
+    public Alarme(String niveis, String nome, Boolean diasUteis, Boolean ativo) {
+        this.nivel = niveis;
         this.nome = nome;
         this.diasUteis = diasUteis;
         this.ativo = ativo;
     }
 
-    public Enum getNiveis() {
-        return Niveis;
+    public Long getId() {
+        return id;
     }
 
-    public void setNiveis(Enum niveis) {
-        Niveis = niveis;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
     }
 
     public String getNome() {

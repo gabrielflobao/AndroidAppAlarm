@@ -76,7 +76,7 @@ public class AlarmeComponent {
             alarme.setAtivo(rAtivo.isChecked());
             alarme.setNome(inputNome.getText().toString());
             alarme.setDiasUteis(cDiasUteis.isChecked());
-            alarme.setNiveis(EnumNiveis.getNivel(sNivel.getSelectedItem().toString().toUpperCase()));
+            alarme.setNivel(sNivel.getSelectedItem().toString().toUpperCase());
             alarme.setHora(InputDateParser.getTimeAlarme(eHoraAlarme));
             return alarme;
         } catch (DateTimeParseException e) {

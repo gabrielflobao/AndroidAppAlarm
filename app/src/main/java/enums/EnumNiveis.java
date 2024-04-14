@@ -1,4 +1,7 @@
 package enums;
+
+
+
 /**
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
@@ -24,4 +27,6 @@ public enum EnumNiveis {
                 NENHUM.getDescricao() == name ? NENHUM : null
                 );
     }
+
+
 }

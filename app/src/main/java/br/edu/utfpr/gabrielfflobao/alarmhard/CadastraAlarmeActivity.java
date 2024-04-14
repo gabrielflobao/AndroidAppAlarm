@@ -1,11 +1,13 @@
 package br.edu.utfpr.gabrielfflobao.alarmhard;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import android.view.View;
 
@@ -25,7 +27,10 @@ import android.widget.Toast;
 
 import java.util.logging.Logger;
 
+import dao.AlarmeDAO;
+import dao.AlarmeDatabase;
 import entity.component.AlarmeComponent;
+import enums.EnumNiveis;
 import model.Alarme;
 
 /**
@@ -44,7 +49,13 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
     private RadioButton rAtivo;
     private RadioButton rInativo;
 
+    public static final String MODO = "MODO";
+    private static final int NOVO = 1;
+    private static final int EDITAR = 2;
+    private Alarme alarmeEditado;
+    private int modo;
     private EditText eHoraAlarme;
+
 
     private Button bVoltar;
 
@@ -54,19 +65,55 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
         StringBuilder message = new StringBuilder();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         inicializaComponentes();
-
+        if (bundle != null) {
+            modo = bundle.getInt("MODO", NOVO);
+            if (modo == NOVO) {
+                setTitle(getString(R.string.cadastrar_alarme));
+                alarmeEditado =null;
+            } else if (modo == EDITAR) {
+                setTitle(getString(R.string.editar_alarme));
+                Long id = (Long) bundle.get("id");
+                Alarme alarmeRecuperado = getDao().queryForId(id);
+                alarmeEditado =  alarmeRecuperado;
+                carregarDadosAlarme(alarmeRecuperado);
+            }
+        }
     }
 
+    public void carregarDadosAlarme(Alarme alarmeRecuperado) {
+        this.inputNome.setText(alarmeRecuperado.getNome());
+        this.cDiasUteis.setChecked(alarmeRecuperado.getDiasUteis());
+        if (alarmeRecuperado.getAtivo()) {
+            this.rAtivo.setChecked(Boolean.TRUE);
+            this.rInativo.setChecked(Boolean.FALSE);
+        } else {
+            this.rAtivo.setChecked(Boolean.FALSE);
+            this.rInativo.setChecked(Boolean.TRUE);
+        }
+
+        this.rAtivo.setClickable(true);
+        this.rInativo.setClickable(true);
+        this.eHoraAlarme.setText(alarmeRecuperado.getHora().toString());
+        this.sNivel.setSelection(getPositionFromEnum(alarmeRecuperado.getNivel()));
+
+
+    }
+    public int getPositionFromEnum(String nivel) {
+        String[] niveisArray = getResources().getStringArray(R.array.niveis);
+
+        for (int i = 0; i < niveisArray.length; i++) {
+            if (nivel.equalsIgnoreCase(niveisArray[i])) {
+                return i;
+            }
+        }
+
+        return -1; // Retorna -1 se o enum não for encontrado no array
+    }
     public void bSalvarClick() {
-        AlarmeComponent component = new AlarmeComponent(inputNome,
-                sNivel,
-                eHoraAlarme,
-                rAtivo,
-                rInativo,
-                cDiasUteis,
-                rOpcao
-        );
+        AlarmeComponent component = new AlarmeComponent(inputNome, sNivel, eHoraAlarme, rAtivo, rInativo, cDiasUteis, rOpcao);
         StringBuilder messageAction = new StringBuilder();
         Toast message = Toast.makeText(this, messageAction, Toast.LENGTH_LONG);
         if (component.isOpAtivoInativoUnChecked()) {
@@ -88,7 +135,7 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
 
         } else {
             Alarme alarme = component.generateEntity(this);
-            if (alarme != null) {
+            if (alarmeEditado == null) {
                 limparCampos();
                 messageAction.append(getString(R.string.alarme_cadastrado_com_sucesso));
                 message.setText(messageAction);
@@ -96,6 +143,16 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
                 Intent intent = new Intent();
                 intent.putExtra("Alarme", alarme);
                 setResult(RESULT_OK, intent);
+                alarmeEditado = null;
+                finish();
+            } else if(alarmeEditado !=null) {
+                message.setText(messageAction);
+                message.show();
+                Intent intent = new Intent();
+                intent.putExtra("id", alarmeEditado.getId());
+                intent.putExtra("Alarme", alarme);
+                setResult(RESULT_OK, intent);
+                alarmeEditado = null;
                 finish();
             } else {
                 setResult(RESULT_CANCELED);
@@ -131,7 +188,9 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
 
 
     }
-
+    AlarmeDAO getDao() {
+        return AlarmeDatabase.getDatabase(this).getAlarmeDao();
+    }
     private void goToSecondPage() {
         Intent secondPage = new Intent(CadastraAlarmeActivity.this, ListagemAlarmesActivity.class);
         startActivity(secondPage);
@@ -141,6 +200,14 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
 
     public static void enviarAlarmeCadastro(AppCompatActivity activity, ActivityResultLauncher<Intent> launcher) {
         Intent intent = new Intent(activity, CadastraAlarmeActivity.class);
+        intent.putExtra(MODO, NOVO);
+        launcher.launch(intent);
+    }
+
+    public static void editarAlarme(AppCompatActivity activity, ActivityResultLauncher<Intent> launcher, long id) {
+        Intent intent = new Intent(activity, CadastraAlarmeActivity.class);
+        intent.putExtra(MODO, EDITAR);
+        intent.putExtra("id", id);
         launcher.launch(intent);
     }
 

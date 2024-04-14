@@ -17,9 +17,13 @@
     <string name="dias_uteis">Dias Utéis</string>
     <string name="ativo">Ativo</string>
     <string name="inativo">Inativo</string>
+    <string name="editar">Editar</string>
+    <string name="excluir">Excluir</string>
     <string name="limpar">Limpar</string>
     <string name="nome">Nome:</string>
     <string name="cadastrar_alarme">Cadastrar Alarme</string>
+    <string name="descricao_aplicativo">AlarmeHard :  Intuito do APP é despertar seu cerébro quando o alarme for acionado no horário especificado, te propondo um desafio para ser realizado , e ao ser concluido, desativar o alarme</string>
+    <string name="editar_alarme">Editar Alarme</string>
     <string-array name="niveis">
         <item>Fácil</item>
         <item>Médio</item>

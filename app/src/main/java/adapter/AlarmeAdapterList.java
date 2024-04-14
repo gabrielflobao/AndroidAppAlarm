@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.utfpr.gabrielfflobao.alarmhard.R;
 import model.Alarme;
@@ -23,10 +24,10 @@ public class AlarmeAdapterList extends ArrayAdapter<Alarme> {
 
     TextView nome;
     TextView hora;
-    ArrayList<Alarme> list;
+    List<Alarme> list;
 
     private Context context;
-    public AlarmeAdapterList(Context context,ArrayList<Alarme> list ) {
+    public AlarmeAdapterList(Context context, List<Alarme> list ) {
         super(context,0,list);
     }
 
@@ -45,11 +46,11 @@ public class AlarmeAdapterList extends ArrayAdapter<Alarme> {
         return view;
     }
 
-    public ArrayList<Alarme> getList() {
+    public List<Alarme> getList() {
         return list;
     }
 
-    public void setList(ArrayList<Alarme> list) {
+    public void setList(List<Alarme> list) {
         this.list = list;
     }
 }
