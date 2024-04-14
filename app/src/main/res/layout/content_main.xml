@@ -12,33 +12,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-    <Button
-        android:id="@+id/bLimpar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="bVoltarClick"
-        android:text="Limpar"
-        app:layout_constraintLeft_toRightOf="@id/bCadastrar"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cDiasUteis" />
-
-    <Button
-        android:id="@+id/bCadastrar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="bCadastrarClick"
-        android:text="Cadastrar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cDiasUteis"
-        />
-
-
     <TextView
         android:id="@+id/tNome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
-        android:text="Nome:"
+        android:text="@string/nome"
         app:layout_constraintRight_toLeftOf="@id/inputNome"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +67,7 @@
         android:id="@+id/cDiasUteis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dias Utéis"
+        android:text="@string/dias_uteis"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rHabilitado"
@@ -110,13 +89,13 @@
             android:id="@+id/rAtivo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Ativo" />
+            android:text="@string/ativo" />
 
         <RadioButton
             android:id="@+id/rInativo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Inativo" />
+            android:text="@string/inativo" />
 
     </RadioGroup>
 

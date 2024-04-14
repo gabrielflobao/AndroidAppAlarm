@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -34,9 +35,6 @@ import model.Alarme;
 public class CadastraAlarmeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
-    private Button bLimpar;
-    private Button bCadastrar;
-    private TextView tCadastroAlarme;
     private TextView tNome;
     private EditText inputNome;
     private TextView tNivel;
@@ -60,7 +58,7 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
 
     }
 
-    public void bCadastrarClick(View view) {
+    public void bSalvarClick() {
         AlarmeComponent component = new AlarmeComponent(inputNome,
                 sNivel,
                 eHoraAlarme,
@@ -69,63 +67,54 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
                 cDiasUteis,
                 rOpcao
         );
-        bCadastrar.setOnClickListener(v -> {
-            StringBuilder messageAction = new StringBuilder();
-            Toast message = Toast.makeText(this, messageAction, Toast.LENGTH_LONG);
-            if (component.isOpAtivoInativoUnChecked()) {
-                messageAction.append(getString(R.string.preencha_se_o_despertador_ficar_ativo_ou_inativo));
-                message.setText(messageAction);
-                message.show();
-            } else if (component.isNomeEmpty()) {
-                messageAction.append(getString(R.string.campo_nome_vazio));
-                message.setText(messageAction);
-                message.show();
-            } else if (component.isHoraAlarmeEmpty()) {
-                messageAction.append(getString(R.string.necess_rio_preencher_campo_hora));
-                message.setText(messageAction);
-                message.show();
-            } else if (!component.validateHoraMinuto()) {
-                messageAction.append(getString(R.string.campo_hora_invalido));
-                message.setText(messageAction);
-                message.show();
+        StringBuilder messageAction = new StringBuilder();
+        Toast message = Toast.makeText(this, messageAction, Toast.LENGTH_LONG);
+        if (component.isOpAtivoInativoUnChecked()) {
+            messageAction.append(getString(R.string.preencha_se_o_despertador_ficar_ativo_ou_inativo));
+            message.setText(messageAction);
+            message.show();
+        } else if (component.isNomeEmpty()) {
+            messageAction.append(getString(R.string.campo_nome_vazio));
+            message.setText(messageAction);
+            message.show();
+        } else if (component.isHoraAlarmeEmpty()) {
+            messageAction.append(getString(R.string.necess_rio_preencher_campo_hora));
+            message.setText(messageAction);
+            message.show();
+        } else if (!component.validateHoraMinuto()) {
+            messageAction.append(getString(R.string.campo_hora_invalido));
+            message.setText(messageAction);
+            message.show();
 
+        } else {
+            Alarme alarme = component.generateEntity(this);
+            if (alarme != null) {
+                limparCampos();
+                messageAction.append(getString(R.string.alarme_cadastrado_com_sucesso));
+                message.setText(messageAction);
+                message.show();
+                Intent intent = new Intent();
+                intent.putExtra("Alarme", alarme);
+                setResult(RESULT_OK, intent);
+                finish();
             } else {
-                Alarme alarme = component.generateEntity(this);
-                if (alarme != null) {
-                    limparCampos();
-                    messageAction.append(getString(R.string.alarme_cadastrado_com_sucesso));
-                    message.setText(messageAction);
-                    message.show();
-                    Intent intent = new Intent();
-                    intent.putExtra("Alarme", alarme);
-                    setResult(RESULT_OK,intent);
-                    finish();
-                } else {
-                    setResult(RESULT_CANCELED);
-                    messageAction.append(getString(R.string.falha_ao_cadastrar_alarme));
-                    message.setText(messageAction);
-                    message.show();
-                }
+                setResult(RESULT_CANCELED);
+                messageAction.append(getString(R.string.falha_ao_cadastrar_alarme));
+                message.setText(messageAction);
+                message.show();
             }
+        }
 
-    });
-
-
-}
+    }
 
 
     private void bLimparClick(View view) {
-        try {
-            bLimpar.setOnClickListener(v -> {
-                        Toast message = new Toast(this);
-                        limparCampos();
-                        message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
-                        message.show();
-                    }
-            );
-        } catch (Exception e) {
-            Logger.getLogger(e.getMessage());
-        }
+
+        Toast message = new Toast(this);
+        limparCampos();
+        message = Toast.makeText(this, "Limpando campos", Toast.LENGTH_SHORT);
+        message.show();
+
     }
 
 
@@ -155,15 +144,39 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
         launcher.launch(intent);
     }
 
-    void limparCampos() {
+    public void limparCampos() {
         this.inputNome.setText("");
         this.cDiasUteis.setChecked(false);
         this.rAtivo.setChecked(false);
         this.rInativo.setChecked(false);
         this.rAtivo.setClickable(true);
         this.rInativo.setClickable(true);
+        this.eHoraAlarme.setText("");
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.opcoes_cadastrar_act, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int menuItemId = item.getItemId();
+        return selectOption(menuItemId);
+    }
+
+    private boolean selectOption(int opcao) {
+        if (opcao == R.id.bSalvar) {
+            bSalvarClick();
+            return true;
+        } else if (opcao == R.id.bLimpar) {
+            limparCampos();
+            return true;
+        }
+        return false;
+
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -182,8 +195,9 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
         this.eHoraAlarme = findViewById(R.id.eHoraAlarme);
         this.inputNome = findViewById(R.id.inputNome);
         this.cDiasUteis = findViewById(R.id.cDiasUteis);
-        this.bLimpar = findViewById(R.id.bLimpar);
-        this.bCadastrar = findViewById(R.id.bCadastrar);
+        setTitle(getString(R.string.cadastrar_alarme));
 
     }
+
+
 }

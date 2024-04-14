@@ -24,14 +24,17 @@ public class SobreAcivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        inicializaComponentes();
+    }
+
+    private void inicializaComponentes() {
         TextView nomeAlunoTextView = findViewById(R.id.nomeAluno);
         TextView emailAlunoTextView = findViewById(R.id.emailAluno);
         TextView cursoAlunoTextView = findViewById(R.id.cursoAluno);
         TextView especializacaoAlunoTextView = findViewById(R.id.especializacaoAluno);
         TextView descricaoAppTextView = findViewById(R.id.descricaoApp);
-
-        // Inicializando o ImageView
         ImageView imageView = findViewById(R.id.imageView5);
+        setTitle(R.string.sobre);
     }
 
     public static void goToSobreActivity(Activity activity) {

@@ -14,6 +14,12 @@
     <string name="cadastrar">Cadastrar</string>
     <string name="sobre">Sobre</string>
     <string name="salvar">Salvar</string>
+    <string name="dias_uteis">Dias Utéis</string>
+    <string name="ativo">Ativo</string>
+    <string name="inativo">Inativo</string>
+    <string name="limpar">Limpar</string>
+    <string name="nome">Nome:</string>
+    <string name="cadastrar_alarme">Cadastrar Alarme</string>
     <string-array name="niveis">
         <item>Fácil</item>
         <item>Médio</item>
