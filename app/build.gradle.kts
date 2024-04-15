@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.activity)
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

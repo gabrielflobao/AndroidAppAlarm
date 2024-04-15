@@ -110,7 +110,7 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
             }
         }
 
-        return -1; // Retorna -1 se o enum não for encontrado no array
+        return -1;
     }
     public void bSalvarClick() {
         AlarmeComponent component = new AlarmeComponent(inputNome, sNivel, eHoraAlarme, rAtivo, rInativo, cDiasUteis, rOpcao);
@@ -146,8 +146,6 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
                 alarmeEditado = null;
                 finish();
             } else if(alarmeEditado !=null) {
-                message.setText(messageAction);
-                message.show();
                 Intent intent = new Intent();
                 intent.putExtra("id", alarmeEditado.getId());
                 intent.putExtra("Alarme", alarme);

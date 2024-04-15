@@ -1,6 +1,7 @@
 package br.edu.utfpr.gabrielfflobao.alarmhard;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ActionMode;
 
 import androidx.activity.result.ActivityResult;
@@ -47,6 +49,7 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         startComponentes();
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -88,7 +91,7 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
                 mode.finish();
                 return true;
             } else if (idMenuImte == R.id.menuItemExcluir) {
-                excluirAlarme();
+                exibirAlertDialogConfirmacaoExclusao();
                 mode.finish();
                 return true;
             }
@@ -106,16 +109,40 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
         }
     };
 
+
+    private void exibirAlertDialogConfirmacaoExclusao() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmar Exclusão");
+        builder.setMessage("Tem certeza de que deseja excluir este alarme?");
+
+        builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                excluirAlarme();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void editarAlarme() {
         Alarme alarme = getDao().queryForId(getAlarmes().get(posicaoSelecionada).getId());
         CadastraAlarmeActivity.editarAlarme(this, editarAlarme, alarme.getId());
-
     }
 
     private void excluirAlarme() {
         Alarme alarme = getDao().queryForId(getAlarmes().get(posicaoSelecionada).getId());
         getDao().delete(alarme);
-        adapter.notifyDataSetChanged();
+        setupListView();
     }
 
     public List<Alarme> getAlarmes() {
@@ -126,83 +153,54 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
     private void startComponentes() {
         setContentView(R.layout.lista_alarme_adapter);
         AlarmeDatabase database = AlarmeDatabase.getDatabase(this);
-         alarmes = database.getAlarmeDao().queryAllAscending();
+        alarmes = database.getAlarmeDao().queryAllAscending();
         adapter = new AlarmeAdapterList(this, alarmes);
-        listView = (ListView) findViewById(R.id.listaAlarme);
-        listView.setAdapter(adapter);
+        listView = findViewById(R.id.listaAlarme);
+        setupListView();
+
     }
 
     ActivityResultLauncher<Intent> criarNovoAlarme = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult o) {
+            o -> {
 
-                    if (o.getResultCode() == Activity.RESULT_OK) {
-                        Intent result = o.getData();
-                        Bundle bundle = result.getExtras();
-                        if (bundle != null) {
-                            Alarme alarme = (Alarme) bundle.get("Alarme");
-                           if(alarme.getId() !=null){
-
-
+                if (o.getResultCode() == Activity.RESULT_OK) {
+                    Intent result = o.getData();
+                    Bundle bundle = result.getExtras();
+                    if (bundle != null) {
+                        Alarme alarme = (Alarme) bundle.get("Alarme");
+                        if(alarme.getId() !=null){
                             cadastrarAlarme(alarme);
-                            List<Alarme> alarmes = getAlarmes();
-                            adapter.setList(alarmes);
-                            listView.setAdapter(adapter);
-                            listView.deferNotifyDataSetChanged();
-                            adapter.notifyDataSetChanged();
-                           } else {
-
-
-                               cadastrarAlarme(alarme);
-                               List<Alarme> alarmes = getAlarmes();
-                               adapter.setList(alarmes);
-                               listView.setAdapter(adapter);
-                               listView.deferNotifyDataSetChanged();
-                               adapter.notifyDataSetChanged();
-
-
-                           }
-
                         }
+                        setupListView();
                     }
                 }
-            }
-
-    );
-
+            });
 
     ActivityResultLauncher<Intent> editarAlarme = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult o) {
+            o -> {
 
-                    if (o.getResultCode() == Activity.RESULT_OK) {
-                        Intent result = o.getData();
-                        Bundle bundle = result.getExtras();
-                        if (bundle != null) {
-                            Long id = (Long) bundle.get("id");
-                            Alarme alarme = (Alarme) bundle.get("Alarme");
-                            Alarme alarmeEditar = getDao().queryForId(id);
-                            alarmeEditar.setNome(alarme.getNome());
-                            alarmeEditar.setHora(alarme.getHora());
-                            alarmeEditar.setNivel(alarme.getNivel());
-                            alarmeEditar.setDiasUteis(alarme.getDiasUteis());
-                            alarmeEditar.setAtivo(alarme.getAtivo());
-                            getDao().update(alarmeEditar);
-                            adapter.notifyDataSetChanged();
-
-
-                        }
+                if (o.getResultCode() == Activity.RESULT_OK) {
+                    Intent result = o.getData();
+                    Bundle bundle = result.getExtras();
+                    if (bundle != null) {
+                        Long id = (Long) bundle.get("id");
+                        Alarme alarme = (Alarme) bundle.get("Alarme");
+                        Alarme alarmeEditar = getDao().queryForId(id);
+                        alarmeEditar.setNome(alarme.getNome());
+                        alarmeEditar.setHora(alarme.getHora());
+                        alarmeEditar.setNivel(alarme.getNivel());
+                        alarmeEditar.setDiasUteis(alarme.getDiasUteis());
+                        alarmeEditar.setAtivo(alarme.getAtivo());
+                        getDao().update(alarmeEditar);
+                        setupListView();
                     }
                 }
-            }
+            });
 
-    );
-
-     AlarmeDAO getDao() {
+    AlarmeDAO getDao() {
         return AlarmeDatabase.getDatabase(this).getAlarmeDao();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.principais_opcoes, menu);
@@ -231,5 +229,17 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
     void cadastrarAlarme(Alarme alarme) {
         AlarmeDatabase database = AlarmeDatabase.getDatabase(this);
         database.getAlarmeDao().insert(alarme);
+        setupListView();
+    }
+    private void setupListView() {
+        AlarmeDatabase database = AlarmeDatabase.getDatabase(this);
+        alarmes = database.getAlarmeDao().queryAllAscending();
+        adapter = new AlarmeAdapterList(this, alarmes);
+        listView.setAdapter(adapter);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupListView();
     }
 }

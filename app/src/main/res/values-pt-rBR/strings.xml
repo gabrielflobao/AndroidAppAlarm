@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AlarmHard</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="preencha_se_o_despertador_ficar_ativo_ou_inativo">Preencha se o despertador ficará ativo ou inativo</string>
+    <string name="campo_nome_vazio">Campo nome está vazio</string>
+    <string name="necess_rio_preencher_campo_hora">Necessário preencher campo Hora</string>
+    <string name="alarme_cadastrado_com_sucesso">Alarme Cadastrado Com Sucesso!!!</string>
+    <string name="falha_ao_cadastrar_alarme">Falha ao cadastrar alarme</string>
+    <string name="campo_hora_invalido">Campo/formato hora invalido</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="sobre">Sobre</string>
+    <string name="salvar">Salvar</string>
+    <string name="dias_uteis">Dias Utéis</string>
+    <string name="ativo">Ativo</string>
+    <string name="inativo">Inativo</string>
+    <string name="editar">Editar</string>
+    <string name="excluir">Excluir</string>
+    <string name="limpar">Limpar</string>
+    <string name="nome">Nome:</string>
+    <string name="cadastrar_alarme">Cadastrar Alarme</string>
+    <string name="descricao_aplicativo">AlarmeHard :  Intuito do APP é despertar seu cerébro quando o alarme for acionado no horário especificado, te propondo um desafio para ser realizado , e ao ser concluido, desativar o alarme</string>
+    <string name="editar_alarme">Editar Alarme</string>
+    <string name="titulo">Titulo</string>
+    <string name="descricao">descriçao</string>
+    <string-array name="niveis">
+        <item>Fácil</item>
+        <item>Médio</item>
+        <item>Difícil</item>
+        <item>Nenhum</item>
+    </string-array>
+</resources>

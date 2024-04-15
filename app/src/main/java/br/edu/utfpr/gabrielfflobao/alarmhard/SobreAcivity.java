@@ -40,6 +40,5 @@ public class SobreAcivity extends AppCompatActivity {
     public static void goToSobreActivity(Activity activity) {
         Intent intent = new Intent(activity, SobreAcivity.class);
         activity.startActivity(intent);
-        activity.finish(); // Finaliza a activity atual (lista)
     }
 }

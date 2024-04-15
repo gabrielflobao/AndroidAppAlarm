@@ -5,30 +5,31 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
-    <string name="preencha_se_o_despertador_ficar_ativo_ou_inativo">Preencha se o despertador ficará ativo ou inativo</string>
+    <string name="preencha_se_o_despertador_ficar_ativo_ou_inativo">Fill in if the alarm will be active or inactive</string>
     <string name="campo_nome_vazio">Campo nome está vazio</string>
-    <string name="necess_rio_preencher_campo_hora">Necessário preencher campo Hora</string>
-    <string name="alarme_cadastrado_com_sucesso">Alarme Cadastrado Com Sucesso!!!</string>
-    <string name="falha_ao_cadastrar_alarme">Falha ao cadastrar alarme</string>
-    <string name="campo_hora_invalido">Campo/formato hora invalido</string>
-    <string name="cadastrar">Cadastrar</string>
-    <string name="sobre">Sobre</string>
-    <string name="salvar">Salvar</string>
-    <string name="dias_uteis">Dias Utéis</string>
-    <string name="ativo">Ativo</string>
-    <string name="inativo">Inativo</string>
-    <string name="editar">Editar</string>
-    <string name="excluir">Excluir</string>
-    <string name="limpar">Limpar</string>
-    <string name="nome">Nome:</string>
-    <string name="cadastrar_alarme">Cadastrar Alarme</string>
-    <string name="descricao_aplicativo">AlarmeHard :  Intuito do APP é despertar seu cerébro quando o alarme for acionado no horário especificado, te propondo um desafio para ser realizado , e ao ser concluido, desativar o alarme</string>
-    <string name="editar_alarme">Editar Alarme</string>
+    <string name="necess_rio_preencher_campo_hora">Hour field must be filled</string>
+    <string name="alarme_cadastrado_com_sucesso">Alarm registered successfully!!!</string>
+    <string name="falha_ao_cadastrar_alarme">Failed to register alarm</string>
+    <string name="campo_hora_invalido">Invalid time field/format</string>
+    <string name="cadastrar">Register</string>
+    <string name="sobre">About</string>
+    <string name="salvar">Save</string>
+    <string name="dias_uteis">Business Days</string>
+    <string name="ativo">Active</string>
+    <string name="inativo">Inactive</string>
+    <string name="editar">Edit</string>
+    <string name="excluir">Delete</string>
+    <string name="limpar">Clear</string>
+    <string name="nome">Name:</string>
+    <string name="cadastrar_alarme">Register Alarm</string>
+    <string name="descricao_aplicativo">AlarmHard : The purpose of the APP is to awaken your brain when the alarm is triggered at the specified time, proposing a challenge to be completed, and upon completion, disabling the alarm</string>
+    <string name="editar_alarme">Edit Alarm</string>
+    <string name="titulo">Title</string>
+    <string name="descricao">describle</string>
     <string-array name="niveis">
-        <item>Fácil</item>
-        <item>Médio</item>
-        <item>Difícil</item>
-        <item>Nenhum</item>
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Difficult</item>
+        <item>None</item>
     </string-array>
-
 </resources>
