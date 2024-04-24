@@ -136,14 +136,12 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
         } else {
             Alarme alarme = component.generateEntity(this);
             if (alarmeEditado == null) {
-                limparCampos();
                 messageAction.append(getString(R.string.alarme_cadastrado_com_sucesso));
                 message.setText(messageAction);
                 message.show();
                 Intent intent = new Intent();
                 intent.putExtra("Alarme", alarme);
                 setResult(RESULT_OK, intent);
-                alarmeEditado = null;
                 finish();
             } else if(alarmeEditado !=null) {
                 Intent intent = new Intent();
@@ -198,12 +196,14 @@ public class CadastraAlarmeActivity extends AppCompatActivity implements Adapter
 
     public static void enviarAlarmeCadastro(AppCompatActivity activity, ActivityResultLauncher<Intent> launcher) {
         Intent intent = new Intent(activity, CadastraAlarmeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(MODO, NOVO);
         launcher.launch(intent);
     }
 
     public static void editarAlarme(AppCompatActivity activity, ActivityResultLauncher<Intent> launcher, long id) {
         Intent intent = new Intent(activity, CadastraAlarmeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(MODO, EDITAR);
         intent.putExtra("id", id);
         launcher.launch(intent);

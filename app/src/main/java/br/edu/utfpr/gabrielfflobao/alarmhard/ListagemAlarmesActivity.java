@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,7 +157,7 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
         alarmes = database.getAlarmeDao().queryAllAscending();
         adapter = new AlarmeAdapterList(this, alarmes);
         listView = findViewById(R.id.listaAlarme);
-        setupListView();
+         listView.setAdapter(adapter);
 
     }
 
@@ -168,7 +169,7 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
                     Bundle bundle = result.getExtras();
                     if (bundle != null) {
                         Alarme alarme = (Alarme) bundle.get("Alarme");
-                        if(alarme.getId() !=null){
+                        if(alarme.getId() ==null){
                             cadastrarAlarme(alarme);
                         }
                         setupListView();
@@ -234,7 +235,7 @@ public class ListagemAlarmesActivity extends AppCompatActivity {
     private void setupListView() {
         AlarmeDatabase database = AlarmeDatabase.getDatabase(this);
         alarmes = database.getAlarmeDao().queryAllAscending();
-        adapter = new AlarmeAdapterList(this, alarmes);
+        adapter.setList(alarmes);
         listView.setAdapter(adapter);
     }
     @Override

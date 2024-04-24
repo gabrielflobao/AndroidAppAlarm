@@ -19,24 +19,43 @@ import model.Alarme;
  * Author : Gabriel F F Lobão
  * Date : 16/03/2024
  */
-public class AlarmeAdapterList extends ArrayAdapter<Alarme> {
+public class AlarmeAdapterList extends BaseAdapter {
 
-
+    private LayoutInflater inflater;
     TextView nome;
     TextView hora;
     List<Alarme> list;
 
     private Context context;
     public AlarmeAdapterList(Context context, List<Alarme> list ) {
-        super(context,0,list);
+        super();
+        inflater = LayoutInflater.from(context);
+        this.context = context;
+        this.list = list;
+
     }
 
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if(view == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.array_adapter_alarme, parent, false);
+            view = inflater.inflate(R.layout.array_adapter_alarme, parent, false);
         }
         Alarme alarme = (Alarme) getItem(position);
         this.nome = view.findViewById(R.id.listaAlarmeNome);
@@ -52,5 +71,6 @@ public class AlarmeAdapterList extends ArrayAdapter<Alarme> {
 
     public void setList(List<Alarme> list) {
         this.list = list;
+        notifyDataSetChanged();;
     }
 }
